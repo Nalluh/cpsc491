@@ -15,14 +15,9 @@ final class SignInEmailViewModel: ObservableObject {
     @Published var email = ""
     @Published var password = ""
 
-    func showAlert(message: String) {
-        let alert = UIAlertController(title: "Alert", message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-    }
-    
+   
     func signUp() async throws   {
         guard !email.isEmpty, !password.isEmpty else{
-            // add validation metrics here
             print("No email or password found.")
             return
         }
@@ -31,7 +26,6 @@ final class SignInEmailViewModel: ObservableObject {
             let userData = try await AuthenticationManager.shared.registerUser(email: email, password: password)
             
             print (userData)
-            // once user logs in switch view here
         
     }
     
@@ -45,7 +39,7 @@ final class SignInEmailViewModel: ObservableObject {
         
                 let userData = try await AuthenticationManager.shared.signInUser(email: email, password: password)
                 print (userData)
-                    // once user logs in switch view here
+                    
         
     }
 }
