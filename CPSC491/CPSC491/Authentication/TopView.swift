@@ -14,7 +14,7 @@ struct TopView: View {
     var body: some View {
         ZStack{
             NavigationStack{
-                SettingsView(showSignInView: $showSignInView)
+                ContentView(showSignInView: $showSignInView)
             }
         }
         .onAppear() {
