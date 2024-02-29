@@ -10,7 +10,7 @@ import CoreData
 
 
 final class DataHandler:ObservableObject {
-    
+
     let container = NSPersistentContainer(name:"FoodModel")
     
     init(){
@@ -67,13 +67,21 @@ final class DataHandler:ObservableObject {
     }
     
     
-    func setCalGoal(goal:Double, context:NSManagedObjectContext){
-        let cals = FoodInfo(context: context)
+    func setCalGoal(goal:String, context:NSManagedObjectContext){
+        
+        
+        let User = UserInfo(context: context)
         User.calGoal = goal
         User.id = UUID()
+        User.date = Date()
+        
+        save(context: context)
+
         
     }
     
+    
+  
     
     
 

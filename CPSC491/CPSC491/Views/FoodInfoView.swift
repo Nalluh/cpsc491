@@ -13,7 +13,7 @@ struct FoodInfoView: View {
     @Environment(\.dismiss) var dismiss
     
     var food: FetchedResults<FoodInfo>.Element
-    
+
     
     @State var cal: Double = 0
     @State var foodName: String = ""

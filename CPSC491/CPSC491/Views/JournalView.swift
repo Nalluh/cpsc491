@@ -13,7 +13,6 @@ import CoreData
 struct JournalView: View {
   
     @State var search: String = ""
-    @State var calGoal: Int = 3000
     @State var cal: Double = 0
     @State var foodName: String = ""
     @State var testing: String = "02-25-2022"
@@ -22,6 +21,7 @@ struct JournalView: View {
 
     @Environment(\.managedObjectContext) var managedObjectContext
     @FetchRequest(sortDescriptors: [SortDescriptor(\.date,order:.reverse)]) var food:FetchedResults<FoodInfo>
+    @FetchRequest(sortDescriptors: [SortDescriptor(\.date,order:.reverse)]) var userInfo:FetchedResults<UserInfo>
     @State private var showingAddFood = false
     
     let dateFormatter: DateFormatter = {
@@ -42,7 +42,7 @@ struct JournalView: View {
             NavigationStack {
                 VStack(alignment: .trailing) {
                     HStack{
-                        Text("Calories \(Int(calsToday()))  /  \(calGoal)")
+                        Text("Calories \(Int(calsToday()))  /  \(Int(getCalGoal()))")
                             .modifier(TextDesign())
                             .font(.system(size: 14))
                         
@@ -216,6 +216,16 @@ struct JournalView: View {
             }
         }
         return calToday
+    }
+    
+    private func getCalGoal() -> Float {
+        var calGoal: Float = 0
+        for usr in userInfo {
+            if let goal = Float(usr.calGoal!){
+                calGoal += goal
+            }
+        }
+        return calGoal
     }
 }
 

@@ -21,11 +21,13 @@ struct ContentView: View {
     @State private var selectedTab: Tab = .home
     @State private var showingSettings = false
     @State private var progressVal : Float = 3.4
-   // @Environment(\.managedObjectContext) var managedObjectContext
-    // @Environment(\.dismiss) var dismiss
-    
-    //var food: FetchedResults<FoodInfo>.Element
-    
+    @State private var isTextBoxVisible = false
+    @State private var goal  = ""
+
+   @Environment(\.managedObjectContext) var managedObjectContext
+   @FetchRequest(sortDescriptors: [SortDescriptor(\.date,order:.reverse)]) var userInfo:FetchedResults<UserInfo>
+   @FetchRequest(sortDescriptors: [SortDescriptor(\.date,order:.reverse)]) var food:FetchedResults<FoodInfo>
+
 
       enum Tab {
           case home, journal, workout, routine
@@ -53,13 +55,40 @@ struct ContentView: View {
                     }
 
                     VStack {
+                     
                         ProgressBar(progress: $progressVal)
-                            .frame(width: 300.0, height: 360.0)
+                        
+                            .frame(width: 300.0, height: 300.0)
                             .padding(80.0).onAppear(){
-                                progressVal = 0.30
-                                //adjust value to calUsed / calGoal
+
+                                progressVal = calsToday() / getCalGoal()
                             }
+                        
+                        Button("Set Calorie Goal") {
+                            self.isTextBoxVisible.toggle()
+                            
                         }
+                        if isTextBoxVisible {
+                            TextField("Enter text", text: $goal)
+                                .textFieldStyle(RoundedBorderTextFieldStyle())
+                                .padding()
+                            
+                            Button(action: {
+                                    deleteGoal()
+                                DataHandler().setCalGoal(goal: goal, context: managedObjectContext)
+                                
+                                
+                                self.isTextBoxVisible.toggle()
+                                
+                            }) {
+                                Text("Submit")
+                            }
+                            .padding()
+                        }
+                       
+                        Spacer()
+                    }
+                
                 case .journal:
                     JournalView()
                 case .workout:
@@ -85,6 +114,40 @@ struct ContentView: View {
                           
             }.hidden()
         }
+    private func deleteGoal() {
+           for users in userInfo {
+               managedObjectContext.delete(users)
+           }
+           do {
+               try managedObjectContext.save()
+           } catch {
+               print("Error deleting numbers: \(error)")
+           }
+       }
+    
+    private func calsToday() -> Float {
+       var calToday : Float = 0
+       for item in food {
+           if Calendar.current.isDateInToday(item.date!){
+               calToday += Float(item.cal)
+           }
+       }
+       return calToday
+   }
+
+
+   private func getCalGoal() -> Float {
+       var calGoal: Float = 0
+       for usr in userInfo {
+           if let goal = Float(usr.calGoal!){
+               calGoal += goal
+           }
+       }
+       return calGoal
+   }
+    
+    
+    
 }
 
 struct TabBarButton: View {
@@ -107,6 +170,9 @@ struct TabBarButton: View {
 
 struct ProgressBar: View{
     @Binding var progress: Float
+    @Environment(\.managedObjectContext) var managedObjectContext
+    @FetchRequest(sortDescriptors: [SortDescriptor(\.date,order:.reverse)]) var userInfo:FetchedResults<UserInfo>
+    @FetchRequest(sortDescriptors: [SortDescriptor(\.date,order:.reverse)]) var food:FetchedResults<FoodInfo>
     var color: Color=Color.green
     var body: some View{
         ZStack{
@@ -114,6 +180,10 @@ struct ProgressBar: View{
                 .stroke(lineWidth: 20.0)
                 .opacity(0.20)
                 .foregroundColor(Color.gray)
+            
+            Text("     \(calsToday()) / \(getCalGoal())")
+                .modifier(TextDesign())
+                .font(.system(size: 10))
             Circle()
                 .trim(from: 0.0, to: CGFloat(min(self.progress,1.0)))
                 .stroke(style: StrokeStyle(lineWidth: 12.0,lineCap: .round, lineJoin: .round))
@@ -124,12 +194,38 @@ struct ProgressBar: View{
         }
         
     }
+    
+    private func calsToday() -> Int {
+       var calToday : Int = 0
+       for item in food {
+           if Calendar.current.isDateInToday(item.date!){
+               calToday += Int(item.cal)
+           }
+       }
+       return calToday
+   }
+
+
+   private func getCalGoal() -> Int {
+       var calGoal: Int = 0
+       for usr in userInfo {
+           if let goal = Int(usr.calGoal!){
+               calGoal += goal
+           }
+       }
+       return calGoal
+   }
+    
 }
+
+
+ 
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack{
             ContentView(showSignInView: .constant(false))
+               
         }
     }
 }
