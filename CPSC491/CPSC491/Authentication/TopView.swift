@@ -10,11 +10,12 @@ import SwiftUI
 struct TopView: View {
     
     
+    
     @State private var showSignInView: Bool = false
     var body: some View {
         ZStack{
             NavigationStack{
-                SettingsView(showSignInView: $showSignInView)
+                ContentView(showSignInView: $showSignInView)
             }
         }
         .onAppear() {

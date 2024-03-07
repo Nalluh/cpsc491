@@ -14,12 +14,13 @@ import FirebaseAuth
 @main
 struct CPSC491App: App {
  
-    
+    @State private var data = DataHandler()
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     
     var body: some Scene {
         WindowGroup {
             TopView()
+                .environment(\.managedObjectContext, data.container.viewContext)
         }
     }
 }

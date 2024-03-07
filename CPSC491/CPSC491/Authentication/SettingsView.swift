@@ -54,28 +54,32 @@ struct SettingsView: View {
                     }
                 }
             }
-            Button("Reset Password"){
-                Task{
-                    do{
-                        try await vm.resetPass()
-                        print("pass reset sent")
+            Section(content: {
+                Button("Reset Password"){
+                    Task{
+                        do{
+                            try await vm.resetPass()
+                            print("pass reset sent")
+                            }catch{
+                            
+                        }
+                    }
+                }
+             
+                Button("Update Email"){
+              
+                    Task{
+                        do{
+                            try await vm.resetEmail()
+                            print("email reset sent")
                         }catch{
-                        
+                            print(error)
+                        }
                     }
                 }
-            }
-         
-            Button("Update Email"){
-          
-                Task{
-                    do{
-                        try await vm.resetEmail()
-                        print("email reset sent")
-                    }catch{
-                        print(error)
-                    }
-                }
-            }
+            }, header: {
+                Text("Account Options")
+            })
             .navigationTitle("Settings")
         }
     }
@@ -85,6 +89,9 @@ struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack{
             SettingsView(showSignInView: .constant(false))
+            
+
         }
     }
 }
+
