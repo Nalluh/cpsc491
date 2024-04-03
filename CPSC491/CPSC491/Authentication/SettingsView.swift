@@ -40,6 +40,13 @@ struct SettingsView: View {
     
     @StateObject private var vm = SettingsViewModel()
     @Binding var showSignInView: Bool
+    @State private var userUpdateCals: Bool = false
+    @State private var goal  = ""
+    @State private var calGoal:Int  = 0
+    @FetchRequest(sortDescriptors: [SortDescriptor(\.date,order:.reverse)]) var userInfo:FetchedResults<UserInfo>
+    @Environment(\.managedObjectContext) var managedObjectContext
+
+
     
     var body: some View {
         
@@ -79,10 +86,46 @@ struct SettingsView: View {
                 }
             }, header: {
                 Text("Account Options")
+                
+            })
+            Section(content: {
+                Button("Update Calorie Goal"){
+                    userUpdateCals.toggle()
+                }   .alert("Update Calorie Goal", isPresented: $userUpdateCals) {
+                    VStack {
+                        TextField("New Calorie Goal", text: $goal)
+                            .padding()
+                            .background(Color.secondary.opacity(0.1))
+                            .cornerRadius(8)
+                        Button("OK") {
+                            if let calGoal = Int(goal)
+                                {
+                                  if calGoal  > 0 {
+                                    deleteGoal()
+                                    DataHandler().setCalGoal(goal: goal, context: managedObjectContext)
+                                }
+                            }
+                        }
+                    }
+                    .padding()
+                }
+            }, header: {
+                Text("User Options")
+                
             })
             .navigationTitle("Settings")
         }
     }
+    private func deleteGoal() {
+           for users in userInfo {
+               managedObjectContext.delete(users)
+           }
+           do {
+               try managedObjectContext.save()
+           } catch {
+               print("Error deleting numbers: \(error)")
+           }
+       }
 }
 
 struct SettingsView_Previews: PreviewProvider {

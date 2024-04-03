@@ -43,7 +43,7 @@ struct AddFoodView: View {
                 }
                 VStack{
                     Text("Calories: \(Int(cal))")
-                    Slider(value: $cal, in: 0...1000, step: 1)
+                    Slider(value: $cal, in: 0...3000, step: 10)
                 }.padding(10)
                 HStack{
                     Spacer()

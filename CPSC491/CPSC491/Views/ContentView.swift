@@ -6,14 +6,8 @@
 //
 
 import SwiftUI
+import CoreMotion
 
-
-
-final class ContentViewModel: ObservableObject{
-    
-    
-    
-}
 
 
 struct ContentView: View {
@@ -21,14 +15,23 @@ struct ContentView: View {
     @State private var selectedTab: Tab = .home
     @State private var showingSettings = false
     @State private var progressVal : Float = 3.4
-    @State private var isTextBoxVisible = false
-    @State private var goal  = ""
-
+    @State private var streakValue: Int = 0
+    @State var streakStatus: String = ""
    @Environment(\.managedObjectContext) var managedObjectContext
    @FetchRequest(sortDescriptors: [SortDescriptor(\.date,order:.reverse)]) var userInfo:FetchedResults<UserInfo>
    @FetchRequest(sortDescriptors: [SortDescriptor(\.date,order:.reverse)]) var food:FetchedResults<FoodInfo>
 
-
+    let dateFormatterContent: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd"
+        return formatter
+    }()
+    
+    var currentDay: String {
+        return dateFormatterContent.string(from: Date())
+    }
+    
+    
       enum Tab {
           case home, journal, workout, routine
       }
@@ -64,27 +67,30 @@ struct ContentView: View {
                                 progressVal = calsToday() / getCalGoal()
                             }
                         
-                        Button("Set Calorie Goal") {
-                            self.isTextBoxVisible.toggle()
-                            
+                      
+                        VStack(alignment: .center)
+                        {
+                       
+                            Text("Log Streak:  \(streakValue)    \(streakStatus)")
+                                .font(.custom("Avenir-Heavy", size: 16))
+                                .padding(10)
+                                .padding(.horizontal, 15)
+                                .background(
+                                    Group {
+                                        if streakValue < 1 {
+                                            Color(red: 1, green: 0.2, blue: 0.2)
+                                        } else {
+                                            Color(red: 0.5, green: 1.0, blue: 0.5)
+                                            
+
+                                        }
+                                    }
+                                    .cornerRadius(10)
+                                )
+
                         }
-                        if isTextBoxVisible {
-                            TextField("Enter text", text: $goal)
-                                .textFieldStyle(RoundedBorderTextFieldStyle())
-                                .padding()
-                            
-                            Button(action: {
-                                    deleteGoal()
-                                DataHandler().setCalGoal(goal: goal, context: managedObjectContext)
-                                
-                                
-                                self.isTextBoxVisible.toggle()
-                                
-                            }) {
-                                Text("Submit")
-                            }
-                            .padding()
-                        }
+                        
+                        
                        
                         Spacer()
                     }
@@ -107,6 +113,14 @@ struct ContentView: View {
                     TabBarButton(tab: .routine, selectedTab: $selectedTab, imageName: "list.bullet.rectangle.portrait")
                 }
                 
+            }.onAppear(){
+                streakValue = getStreak()
+                if streakValue < 1 {
+                    streakStatus = "😕"
+                } else {
+                    streakStatus = "😁"
+
+                }
             }
            
                           
@@ -115,16 +129,7 @@ struct ContentView: View {
                           
             }.hidden()
         }
-    private func deleteGoal() {
-           for users in userInfo {
-               managedObjectContext.delete(users)
-           }
-           do {
-               try managedObjectContext.save()
-           } catch {
-               print("Error deleting numbers: \(error)")
-           }
-       }
+    
     
     private func calsToday() -> Float {
        var calToday : Float = 0
@@ -147,6 +152,44 @@ struct ContentView: View {
        return calGoal
    }
     
+    private func getStreak() -> Int {
+        var streak: Int = 0
+        var doesStreakExsist: Bool = false
+
+        // check optional 
+        if var todaysDate = Int(currentDay)
+        {
+            for food in food {
+                var recentFoodDate: String {
+                    return dateFormatterContent.string(from: food.date!)
+                }
+                
+                // check for current day entires and append to streak
+                // also check if doesstreakexsist = false because we only want to append once
+                 if recentFoodDate == String(todaysDate)  && !doesStreakExsist {
+                    streak += 1
+                     doesStreakExsist = true
+
+                }
+                // increase streak for each day logged
+                else if recentFoodDate == String(todaysDate - 1 ){
+                    
+                    streak += 1
+                    todaysDate -= 1
+                    doesStreakExsist = true
+                }
+                // return zero if no streak
+                else if !doesStreakExsist {
+                    return 0
+                }
+                    
+            }
+        }
+        return streak
+    }
+    
+   
+   
     
     
 }

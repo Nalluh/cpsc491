@@ -81,7 +81,49 @@ final class DataHandler:ObservableObject {
         
     }
   
+    func addExercise(name:String, Reps:String, Weight:String, Total:String,context:NSManagedObjectContext){
+        let exercise = GymInfo(context: context)
+        exercise.date = Date()
+        exercise.name = name
+        exercise.reps = Reps
+        exercise.weight = Weight
+        exercise.setTotal = Total
+
+        save(context: context)
+        
+    }
     
+    func updateExercise(exercise:GymInfo,name:String, Reps:String, Weight:String, Total:String,context:NSManagedObjectContext){
+        exercise.date = Date()
+        exercise.name = name
+        exercise.reps = Reps
+        exercise.weight = Weight
+        exercise.setTotal = Total
+
+        save(context: context)
+        
+    }
+    
+    
+    func addRoutine(title:String, exercise:String, context:NSManagedObjectContext){
+        let r = Routine(context:context)
+        r.exercise = exercise
+        r.title = title
+        r.date = Date()
+
+        save(context: context)
+        
+    }
+    
+    func addRoutineTitleOnly(title:String,context:NSManagedObjectContext){
+        let r = Routine(context:context)
+        r.title = title
+        r.date = Date()
+
+        save(context: context)
+        
+    }
+
     
   
     

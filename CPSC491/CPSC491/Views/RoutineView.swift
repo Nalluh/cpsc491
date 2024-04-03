@@ -8,37 +8,68 @@
 import SwiftUI
 
 struct RoutineView: View {
-
-    @State var prev: String = ""
+    @State private var showingAddRoutine: Bool = false
+    @State private var routineNames: [String] = []
     func formattedDate(from date: Date) -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "MM-dd-yyyy"
         return formatter.string(from: date)
     }
-
-    @FetchRequest(sortDescriptors: [SortDescriptor(\.date, order: .reverse)]) var food: FetchedResults<FoodInfo>
-
+    @Environment(\.managedObjectContext) var managedObjectContext
+    @FetchRequest(sortDescriptors: [SortDescriptor(\.date, order: .reverse)]) var routine: FetchedResults<Routine>
+    
         var body: some View {
-            Spacer()
-            Text("Unique Dates:")
-            ForEach(uniqueFood(from: food)) { food in
-                Text(formattedDate(from: food.date!))
-                
+            VStack(alignment: .center){
+                Text("Trifecta")
+                    .modifier(TextDesign())
             }
-        }
-
-        func uniqueFood(from food: FetchedResults<FoodInfo>) -> [FoodInfo] {
-            var uniqueSet: Set<String> = []
-            var uniqueFoodItems: [FoodInfo] = []
-            for item in food {
-                let formattedDate = formattedDate(from: item.date!)
-                if !uniqueSet.contains(formattedDate) {
-                    uniqueSet.insert(formattedDate)
-                    uniqueFoodItems.append(item)
+            
+            
+            Spacer()
+            NavigationStack{
+                VStack{
+                    List
+                    {
+                        ForEach(uniqueRoutine(from: routine)) { routine in
+                            // add a nav link that will send to a view to allow editing of routine
+                            // also in view allow users to copy routine
+                            // and pass the routine to the workout screen
+                            NavigationLink(destination: EditRoutineView(routine: routine)){
+                                Text(routine.title!)
+                                    .font(.custom("Avenir-Heavy", size: 20))
+                            }
+                        }
+                    }.listStyle(.plain)
+                        .listRowSeparatorTint(Color.black)
                 }
             }
-            return uniqueFoodItems
+            .toolbar {
+                ToolbarItem(placement:.navigationBarTrailing){
+                    Button{
+                        showingAddRoutine.toggle()
+                    } label: {
+                        Label("New Routine", systemImage: "plus.circle")
+                    }
+                }
+            }.sheet(isPresented: $showingAddRoutine){
+                    AddRoutineView()
+            }
         }
+    
+    func uniqueRoutine(from routine: FetchedResults<Routine>) -> [Routine] {
+
+        var uniqueSet: Set<String> = []
+        var uniqueRoutineNames: [Routine] = []
+        for item in routine {
+            if !uniqueSet.contains(item.title!) {
+                uniqueSet.insert(item.title!)
+                uniqueRoutineNames.append(item)
+            }
+        }
+        return uniqueRoutineNames
+    }
+
+    
     }
 
 

@@ -1,114 +1,126 @@
-//
-//  WorkoutTracker.swift
-//  CPSC491
-//
-//  Created by Allan Cortes on 3/6/24.
-//
-
 import SwiftUI
 
 
-struct Exercise: Identifiable {
-    var id = UUID()
-    var name: String
-}
 
 struct WorkoutTracker: View {
-    let exercises = [
-        "Push-ups",
-        "Sit-ups",
-        "Squats",
-        "Lunges",
-        "Burpees",
-        "Plank",
-        "Jumping Jacks",
-        "Mountain Climbers",
-        "Bicycle Crunches",
-        "Russian Twists",
-        "Bench Press",
-        "Deadlifts",
-        "Pull-ups",
-        "Dumbbell Rows",
-        "Shoulder Press",
-        "Barbell Curls",
-        "Tricep Dips",
-        "Leg Press",
-        "Leg Curls",
-        "Calf Raises"
-    ]
-    @State private var userExercises: [Exercise] = []
+    var currentTime: String {
+        return dateFormatter.string(from: Date())
+    }
+    @Binding var userExercises: [String]
     @State private var exerciseName: String = ""
+    @State private var addExercise: Bool = false
+    @State private var showSummaryView = false
+    @State var stopWatch: TimeInterval = 0
+    let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    @Environment(\.presentationMode) var presentationMode
+
     
     var body: some View {
+       
+        
+        HStack(alignment: .center){
+            
+            Text("\(determineTitleTime(for: currentTime)) Workout")
+                    .modifier(TextDesign())
+            
+            Text("\(timeFormatted(stopWatch))")
+                .font(.custom("AppleSDGothicNeo-Bold", size: 16))
+                .padding(.trailing)
+        }
+
+        Spacer()
         VStack {
-                   HStack {
-                       TextField("Enter exercise", text: $exerciseName)
-                           .textFieldStyle(RoundedBorderTextFieldStyle())
-                       Button(action: {
-                           if !exerciseName.isEmpty {
-                               userExercises.append(Exercise(name: exerciseName))
-                               exerciseName = ""
-                           }
-                       }) {
-                           Text("Add")
-                       }
-                   }
-                   List {
-                       ForEach(userExercises) { exercise in
-                           Section(header: Text("\(exercise.name)")) {
-                               Text(exercise.name)
-                           }
-                       }
-                   }
-               }
-               .padding()
-        /*VStack{
-         
-            HStack{
-                Text("\(determineTitleTime(for:currentTime)) Workout")
-                    .bold()
-                    .font(.custom("AppleSDGothicNeo-Bold", size: 22))
-            }
-            // have a foreach that displays a section with user input then textfields below add if empty statement
-            if !userExercises.isEmpty{
-                ForEach(userExercises, id: \.self) { exercise in
-                                Text(exercise)
-                                    
-                            
-                    Section(header: exercise)
-                }
-            }
-            Button("Add Exercises"){
-                
-                
-                }  .font(.headline)
+            List {
+                ForEach(userExercises.indices, id: \.self) { index in
+                    NavigationLink(destination: WorkoutExerciseInfo(exerciseName: userExercises[index])) {
+                        VStack(alignment: .center) {
+                            Label("\(userExercises[index])   ", systemImage: "dumbbell.fill")
+                                .font(.custom("AppleSDGothicNeo-Bold", size: 20))
+                         
+                                
+                               
+                               
+                        }
+                    }
+                }.padding()
                 .foregroundColor(.white)
-                .frame(height: 55)
+                .background(Color.indigo)
+                .cornerRadius(12)
+            }
+            .listStyle(.inset)
+            
+
+            
+            HStack
+            {
+                Button("Add Exercise") {
+                    exerciseName = ""
+                    addExercise.toggle()
+                }
+                .padding()
+                .font(.headline)
+                .foregroundColor(.white)
+                .frame(height: 35)
                 .frame(maxWidth: 200)
                 .background(Color.blue)
                 .cornerRadius(10)
-            
-            
-            
-            
-        }.padding() */
-    }
-        
+                .alert("Enter Exercise", isPresented: $addExercise) {
+                    VStack {
+                        TextField("Enter Exercise", text: $exerciseName)
+                            .padding()
+                            .background(Color.secondary.opacity(0.1))
+                            .cornerRadius(8)
+                        Button("OK") {
+                            if (!exerciseName.isEmpty ){
+                                appendExercise()
+                                addExercise = false
+                            }
+                        }
+                    }
+                    .padding()
+                }
 
-    
-    
+                Button("End"){
+                    if !userExercises.isEmpty && stopWatch > 10.0
+                    {
+                        self.showSummaryView.toggle()
+                    }
+                    self.presentationMode.wrappedValue.dismiss()
+
+
+                    
+                }.padding()
+                    .font(.headline)
+                    .foregroundColor(.white)
+                    .frame(height: 35)
+                    .frame(maxWidth: 100)
+                    .background(Color.red)
+                    .cornerRadius(10)
+            } .sheet(isPresented: $showSummaryView) {
+                SummaryView(userExercises: userExercises, stopWatch:stopWatch)
+            }
+            Spacer(minLength: 30)
+
              
+        }
+        .onReceive(timer) { _ in
+            stopWatch += 1
+        }.navigationBarBackButtonHidden(true)
+    }
+
+   private func timeFormatted(_ totalSeconds: TimeInterval) -> String {
+        let seconds = Int(totalSeconds) % 60
+        let minutes = Int(totalSeconds) / 60
+        return String(format: "%02d:%02d", minutes, seconds)
+    }
+
     let dateFormatter: DateFormatter = {
-    let formatter = DateFormatter()
-    formatter.dateFormat = "HH:mm"
-    return formatter
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH:mm"
+        return formatter
     }()
              
-    var currentTime: String {
-    return dateFormatter.string(from: Date())
-        }
-             
-    func determineTitleTime(for timeOfDay: String) -> String {
+   private func determineTitleTime(for timeOfDay: String) -> String {
         var title: String
         
         switch timeOfDay {
@@ -122,18 +134,13 @@ struct WorkoutTracker: View {
         
         return title
     }
-    
-    
-    
-}
-
-
-
-
-
-
-struct WorkoutTracker_Previews: PreviewProvider {
-    static var previews: some View {
-        WorkoutTracker()
+        
+    private func appendExercise() {
+        userExercises.append(exerciseName)
     }
+    
+    
+   
 }
+
+
