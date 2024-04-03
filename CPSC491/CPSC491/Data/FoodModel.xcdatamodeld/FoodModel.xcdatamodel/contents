@@ -11,6 +11,18 @@
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="protein" optional="YES" attributeType="String"/>
     </entity>
+    <entity name="GymInfo" representedClassName="GymInfo" syncable="YES" codeGenerationType="class">
+        <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="reps" optional="YES" attributeType="String"/>
+        <attribute name="setTotal" optional="YES" attributeType="String"/>
+        <attribute name="weight" optional="YES" attributeType="String"/>
+    </entity>
+    <entity name="Routine" representedClassName="Routine" syncable="YES" codeGenerationType="class">
+        <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="exercise" optional="YES" attributeType="String"/>
+        <attribute name="title" optional="YES" attributeType="String"/>
+    </entity>
     <entity name="UserInfo" representedClassName="UserInfo" syncable="YES" codeGenerationType="class">
         <attribute name="calGoal" optional="YES" attributeType="String"/>
         <attribute name="calUsed" optional="YES" attributeType="String"/>
