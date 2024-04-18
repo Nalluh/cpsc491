@@ -30,6 +30,7 @@ struct AddFoodView: View {
     @Environment(\.managedObjectContext) var managedObjectContext
     @Environment(\.dismiss) var dismiss
     var body: some View {
+        // user submits form with information about food
         Form{
             Section{
                 HStack{
@@ -47,9 +48,11 @@ struct AddFoodView: View {
                 }.padding(10)
                 HStack{
                     Spacer()
+                    // submit the information to the db
                     Button("Enter"){
                         foodMT = determineMealTime(for: currentTime)
                         DataHandler().addFood(name: foodName, cal: cal,protein: foodProtein,carb: foodCarb,fat: foodFat ,mealType:foodMT,context: managedObjectContext)
+                        // dismiss view
                         dismiss()
                     }
                     Spacer()
@@ -58,6 +61,7 @@ struct AddFoodView: View {
         }
     }
     
+    // when user adds a food automatically categorize it so that it will be shown correctly on journalview()
     func determineMealTime(for timeOfDay: String) -> String {
         var foodMT: String
         

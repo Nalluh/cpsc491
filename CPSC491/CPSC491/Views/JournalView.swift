@@ -55,30 +55,37 @@ struct JournalView: View {
                             .font(.system(size: 12))
                             .modifier(TextDesign())
                     }
-                   
+                   // display food with breakfast specification
                     List {
                         Section(header: Text("Breakfast")){
+                            // look at all entitys
                             ForEach(food) { food in
                                 
                                 var formattedFoodDate: String {
                                     return dateFormatter.string(from: food.date!)
                                 }
+                                // if the entity has a date that matches the current date
+                                // we will check for its meal type
                                 if formattedFoodDate == formattedCurrentDate { //verify date to show current day only
+                                    // if meal type are equal than the entity belongs here
+                                    // display food
                                     if food.mealType! == "Breakfast"{
-                                        
+                                        // allow navigation to food information ie. cals protein etc
                                         NavigationLink(destination: FoodInfoView(food:food,allowEdits:allowEdits)){
                                             HStack{
+                                                // display food name
                                                 VStack(alignment: .leading){
                                                     if let name = food.name {
                                                         Text(name)
                                                             .bold()
                                                     }
+                                                    // below show the calories
                                                     Text("\(Int(food.cal))")  + Text(" calories").foregroundColor(.red)
                                                     
                                                 }
                                                 Spacer()
                                                 
-                                                
+                                                // show time of when it was submitted
                                                 Text(getTime(date:food.date!))
                                                     .foregroundColor(.gray)
                                                     .italic()
@@ -91,13 +98,16 @@ struct JournalView: View {
                                     
                                 }// date format check
                                 
-                                
+                                // to delete entrys
                             }.onDelete(perform: deleteFood)
                             
-                            
+                            // rest of the code performs the same
+                            // with just checks for date and mealtype
                             
                             
                         }
+                        // display food with lunch specification
+
                         Section(header: Text("Lunch")){
                             
                             ForEach(food) { food in
@@ -139,6 +149,8 @@ struct JournalView: View {
                             
                             
                         }
+                        // display food with dinner specification
+
                         Section(header: Text("Dinner")){
                             
                             ForEach(food) { food in
@@ -180,6 +192,7 @@ struct JournalView: View {
                             
                             
                         }
+                        // UI
                     }.listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
                         .listStyle(.plain)
                         .searchable(text: $search) {
@@ -193,7 +206,7 @@ struct JournalView: View {
                     }
                         
                 
-                }
+                }// Top of view with edit and add buttons
                 .toolbar {
                     ToolbarItem(placement:.navigationBarTrailing){
                         Button{
@@ -216,7 +229,7 @@ struct JournalView: View {
     
         
     
- 
+ // convert entities in db to a set for display
     func uniqueFood(from food: FetchedResults<FoodInfo>) -> [FoodInfo] {
         func formattedDate(from date: Date) -> String {
             let formatter = DateFormatter()
@@ -235,6 +248,7 @@ struct JournalView: View {
         return uniqueFoodItems
     }
 
+    // remove entites
     private func deleteFood(offsets: IndexSet) {
         withAnimation {
             offsets.map { food[$0]}.forEach(managedObjectContext.delete)
@@ -243,6 +257,8 @@ struct JournalView: View {
         
         
     }
+    
+    // get calories for today
     private func calsToday() -> Double {
         var calToday : Double = 0
         for item in food {
@@ -253,6 +269,7 @@ struct JournalView: View {
         return calToday
     }
     
+    // get user set calorie goal 
     private func getCalGoal() -> Float {
         var calGoal: Float = 0
         for usr in userInfo {

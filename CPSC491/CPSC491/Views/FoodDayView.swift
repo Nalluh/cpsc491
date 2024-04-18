@@ -18,7 +18,7 @@ struct FoodDayView: View {
         formatter.dateFormat = "MM-dd-yyyy"
         return formatter
     }()
-    
+    // when user searches for older entry this view will return all entries for that day 
     var body: some View {
                 List {
                     Section(header: Text("Breakfast")){

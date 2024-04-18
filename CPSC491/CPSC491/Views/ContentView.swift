@@ -17,6 +17,7 @@ struct ContentView: View {
     @State private var progressVal : Float = 3.4
     @State private var streakValue: Int = 0
     @State var streakStatus: String = ""
+    let timer = Timer.publish(every: 1.0, on: .main, in: .common).autoconnect()
    @Environment(\.managedObjectContext) var managedObjectContext
    @FetchRequest(sortDescriptors: [SortDescriptor(\.date,order:.reverse)]) var userInfo:FetchedResults<UserInfo>
    @FetchRequest(sortDescriptors: [SortDescriptor(\.date,order:.reverse)]) var food:FetchedResults<FoodInfo>
@@ -33,77 +34,83 @@ struct ContentView: View {
     
     
       enum Tab {
-          case home, journal, workout, routine
+          case home, journal, workout, routine , chat
       }
+
+
+    
     var body: some View {
-        
-            VStack {
-                
-                switch selectedTab {
-                case .home:
-                    HStack {
-                        Spacer()
-                        Text("      Trifecta")
-                            .modifier(TextDesign())
 
-                           
-                        Spacer()
-                        Button(action: {
-                            self.showingSettings.toggle()
-                        }) {
-                            Image(systemName: "gear")
-                                .padding(10)
-                        }
-                        
-                    }
-
-                    VStack {
-                     
-                        ProgressBar(progress: $progressVal)
-                        
-                            .frame(width: 300.0, height: 300.0)
-                            .padding(80.0).onAppear(){
-
-                                progressVal = calsToday() / getCalGoal()
-                            }
-                        
-                      
-                        VStack(alignment: .center)
-                        {
-                       
-                            Text("Log Streak:  \(streakValue)    \(streakStatus)")
-                                .font(.custom("Avenir-Heavy", size: 16))
-                                .padding(10)
-                                .padding(.horizontal, 15)
-                                .background(
-                                    Group {
-                                        if streakValue < 1 {
-                                            Color(red: 1, green: 0.2, blue: 0.2)
-                                        } else {
-                                            Color(red: 0.5, green: 1.0, blue: 0.5)
-                                            
-
-                                        }
-                                    }
-                                    .cornerRadius(10)
-                                )
-
-                        }
-                        
-                        
-                       
-                        Spacer()
-                    }
-                
-                case .journal:
-                    JournalView()
-                case .workout:
-                    WorkoutView()
-                case .routine:
-                   RoutineView()
-                }
+        VStack {
+            
+            switch selectedTab {
+            case .home:
+                HStack {
+                    Spacer()
+                    Text("      Trifecta")
+                        .modifier(TextDesign())
                     
+                    
+                    Spacer()
+                    Button(action: {
+                        self.showingSettings.toggle()
+                    }) {
+                        Image(systemName: "gear")
+                            .padding(10)
+                    }
+                    
+                }
                 
+                VStack {
+                    
+                    ProgressBar(progress: $progressVal)
+                    
+                        .frame(width: 300.0, height: 300.0)
+                        .padding(80.0).onAppear(){
+                            
+                            progressVal = calsToday() / getCalGoal()
+                        }
+                    
+                    
+                    VStack(alignment: .center)
+                    {
+                        
+                        Text("Log Streak:  \(streakValue)    \(streakStatus)")
+                            .font(.custom("Avenir-Heavy", size: 16))
+                            .padding(10)
+                            .padding(.horizontal, 15)
+                            .background(
+                                Group {
+                                    if streakValue < 1 {
+                                        Color(red: 1, green: 0.2, blue: 0.2)
+                                    } else {
+                                        Color(red: 0.5, green: 1.0, blue: 0.5)
+                                        
+                                        
+                                    }
+                                }
+                                    .cornerRadius(10)
+                            )
+                        
+                    }
+                    
+                    
+                    
+                    Spacer()
+                }
+                
+            case .journal:
+                JournalView()
+            case .workout:
+                WorkoutView()
+            case .routine:
+                RoutineView()
+            case .chat:
+                ChatView()
+            }
+
+        
+
                 Spacer()
                 
                 HStack {
@@ -111,20 +118,16 @@ struct ContentView: View {
                     TabBarButton(tab: .journal, selectedTab: $selectedTab, imageName: "book")
                     TabBarButton(tab: .workout, selectedTab: $selectedTab, imageName: "figure.strengthtraining.traditional")
                     TabBarButton(tab: .routine, selectedTab: $selectedTab, imageName: "list.bullet.rectangle.portrait")
+                    TabBarButton(tab: .chat, selectedTab: $selectedTab, imageName: "person.fill.questionmark")
                 }
+                //update streak status 
+            }.onReceive(timer) { _ in
                 
-            }.onAppear(){
-                streakValue = getStreak()
-                if streakValue < 1 {
-                    streakStatus = "😕"
-                } else {
-                    streakStatus = "😁"
+                 streakValue = getStreak()
+                streakStatus = streakValue < 1 ? "😕" : "😁"            }
 
-                }
-            }
-           
                           
-                       
+            
             NavigationLink(destination: SettingsView(showSignInView: $showSignInView), isActive: $showingSettings) {
                           
             }.hidden()
@@ -188,7 +191,7 @@ struct ContentView: View {
         return streak
     }
     
-   
+
    
     
     

@@ -22,8 +22,10 @@ struct FoodInfoView: View {
     @State var foodFat: String = ""
 
     var body: some View {
+        // show user the information they entered
         Form{
             Section{
+                // allows users to edit entrys
                 if allowEdits{
                 HStack{
                     TextField("Name", text: $foodName)
@@ -49,6 +51,7 @@ struct FoodInfoView: View {
                      }
                     }
                     else{
+                        // just allow users to view entries no editing
                         HStack{
                             Text("\(foodName)")
                             Spacer()
@@ -75,6 +78,7 @@ struct FoodInfoView: View {
                     }
                 }
                 .padding()
+                // update entities 
             if allowEdits {
                 HStack{
                     Spacer()

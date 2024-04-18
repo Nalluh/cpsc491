@@ -17,7 +17,7 @@ struct AddRoutineView: View {
     
     
     var body: some View {
-            
+            // add routines into entity db
         Form{
             Section("Routine Name") {
                 HStack{
@@ -35,6 +35,7 @@ struct AddRoutineView: View {
                     Text("Add Exercises")
                     Spacer()
                     Button(action: {
+                     //    when ever we click [ADD] the array adds an empty string for UI purposes <-------------- happens here
                         userAddedExercise = true
                         routineExercises.append("")
                     }) {
@@ -48,14 +49,18 @@ struct AddRoutineView: View {
             Section{
                 Button(action: {
                     for item in routineExercises {
+                        // when ever we click [ADD] the array adds an empty string for UI purposes
+                        // with this we add to the db only the exercises the user entered and not the empty string
                         if item != ""
                         {
                             DataHandler().addRoutine(title: routineName, exercise: item, context: managedObjectContext)
                         }
                     }
+                    // handles case were user only submitted a routine title and no exercises
                     if routineName != "" && routineExercises.count < 2{
                         DataHandler().addRoutineTitleOnly(title: routineName, context: managedObjectContext)
                     }
+                    // close view on submit
                     dismiss()
                 }, label: {
                     Text("Enter")

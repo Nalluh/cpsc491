@@ -16,6 +16,7 @@ struct SummaryView: View {
     var body: some View {
     
             VStack {
+                // animate the good job
                         if animateText {
                             Text("Good Job!")
                                 .font(.custom("Avenir-Heavy", size: 32))
@@ -25,7 +26,7 @@ struct SummaryView: View {
                                 .animation(.easeInOut(duration: 5.0))
                                 .padding(10)
                         }
-    
+    // show a workoutsummary of what they user entered
             Text("Workout Summary")
                 .font(.custom("Avenir Oblique", size: 26))
                 .padding(.bottom, 10)
@@ -58,7 +59,7 @@ struct SummaryView: View {
             Spacer()
             } .padding()
             .onAppear {
-             
+             // give a 0.5 delay to the animation for UI
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                     withAnimation {
                         animateText.toggle()
@@ -68,6 +69,8 @@ struct SummaryView: View {
                     
                 }
     }
+    
+    // format timer (how long the user worked out ) 
     private func timeFormatted(_ totalSeconds: TimeInterval) -> String {
          let seconds = Int(totalSeconds) % 60
          let minutes = Int(totalSeconds) / 60

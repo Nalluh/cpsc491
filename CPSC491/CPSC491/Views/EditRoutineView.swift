@@ -23,14 +23,15 @@ struct EditRoutineView: View {
 
 
     var body: some View {
-        
+        // edit user entered routine
         Form{
+            // display routine title
             Section("Routine Name") {
                 HStack{
                     TextField("Edit Name", text: $routineName)
                 }
             }.environment(\.defaultMinListRowHeight, 700)
-            
+            //display routine exercises
             Section(content: {
                 ForEach(routineExercises.indices, id: \.self) { index in
                     TextField("Exercise", text: $routineExercises[index])
@@ -42,6 +43,7 @@ struct EditRoutineView: View {
                     Spacer()
                     Button(action: {
                         userAddedExercise = true
+                        //UI add empty string
                         routineExercises.append("")
                     }) {
                         HStack {
@@ -53,8 +55,11 @@ struct EditRoutineView: View {
             })
             Section{
                 Button(action: {
+                    // remove current entry and update it with thhe new entry (including the previous ddata)
                     deleteEntry()
                     for item in routineExercises {
+                        // when ever we click [ADD] the array adds an empty string for UI purposes
+                        // with this we add to the db only the routine the user entered and not the empty string
                         if item != ""
                         {
                             DataHandler().addRoutine(title: routineName, exercise: item, context: managedObjectContext)
@@ -69,8 +74,10 @@ struct EditRoutineView: View {
 
         }.onAppear()
         {
+            // check if the user has opened the view for the first time
             if !isInitialized
             {
+                //since its the first time we grab the routine information for display
                 routineName = routine.title!
                 for item in routineDB {
                     if routine.title! == item.title! {
@@ -80,6 +87,8 @@ struct EditRoutineView: View {
                         
                     }
                 }
+                // we return the array backwards because the first element of the array is an empty strring
+                // reversing it puts the empty string at the end, prompting the user to add additional information
                 routineExercises.reverse()
             }
             else{
@@ -91,8 +100,9 @@ struct EditRoutineView: View {
             isInitialized = true
             
         }
-     
+        
         .toolbar {
+            // toolbar so users can copy the routine
             ToolbarItem(placement:.navigationBarTrailing){
                 Button{
                     content += "Check out this Routine!\n \(routineName) \n"
@@ -104,12 +114,15 @@ struct EditRoutineView: View {
                     Label("New Routine", systemImage: "square.and.arrow.up")
                 }
             }
+            // toolbar so users can start a workout based on the routine they created
             ToolbarItem(placement:.navigationBarTrailing){
                 Button{
-                
+                    routineExercises.append("")
+
                         // remove empty entry
                         routineExercises.removeLast()
-                   
+
+                    
                     startWorkout = true
  
                     
@@ -140,7 +153,7 @@ struct EditRoutineView: View {
                print("Error deleting numbers: \(error)")
            }
        }
-    
+    // bring up iphone UI for copying 
     func shareButtonTapped() {
            let av = UIActivityViewController(activityItems: [content], applicationActivities: nil)
            if let viewController = UIApplication.shared.windows.first?.rootViewController {

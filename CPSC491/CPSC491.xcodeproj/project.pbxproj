@@ -10,6 +10,8 @@
 		A45860592BAAAF90009862AA /* SummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A45860582BAAAF90009862AA /* SummaryView.swift */; };
 		A458605B2BB23C04009862AA /* AddRoutineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A458605A2BB23C04009862AA /* AddRoutineView.swift */; };
 		A458605D2BBB9073009862AA /* EditRoutineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A458605C2BBB9073009862AA /* EditRoutineView.swift */; };
+		A45860AC2BD0980E009862AA /* openAI.swift in Sources */ = {isa = PBXBuildFile; fileRef = A45860AB2BD0980E009862AA /* openAI.swift */; };
+		A45860AE2BD09825009862AA /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A45860AD2BD09825009862AA /* ChatView.swift */; };
 		A464E2FB2B7AE3F900E89092 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = A464E2FA2B7AE3F900E89092 /* GoogleSignIn */; };
 		A464E2FD2B7AE3F900E89092 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = A464E2FC2B7AE3F900E89092 /* GoogleSignInSwift */; };
 		A464E3002B7AE4E600E89092 /* GoogleService-Info (1).plist in Resources */ = {isa = PBXBuildFile; fileRef = A464E2FF2B7AE4E600E89092 /* GoogleService-Info (1).plist */; };
@@ -64,6 +66,8 @@
 		A45860582BAAAF90009862AA /* SummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummaryView.swift; sourceTree = "<group>"; };
 		A458605A2BB23C04009862AA /* AddRoutineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddRoutineView.swift; sourceTree = "<group>"; };
 		A458605C2BBB9073009862AA /* EditRoutineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditRoutineView.swift; sourceTree = "<group>"; };
+		A45860AB2BD0980E009862AA /* openAI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = openAI.swift; sourceTree = "<group>"; };
+		A45860AD2BD09825009862AA /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
 		A464E2FE2B7AE46600E89092 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		A464E2FF2B7AE4E600E89092 /* GoogleService-Info (1).plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info (1).plist"; path = "../../../Downloads/GoogleService-Info (1).plist"; sourceTree = "<group>"; };
 		A464E3022B7AEC7400E89092 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
@@ -131,6 +135,7 @@
 			children = (
 				A464E3022B7AEC7400E89092 /* Utilities.swift */,
 				A4899F452B99237A00E24D60 /* Timer.swift */,
+				A45860AB2BD0980E009862AA /* openAI.swift */,
 			);
 			path = Util;
 			sourceTree = "<group>";
@@ -150,6 +155,7 @@
 				A4899F432B981BF100E24D60 /* FoodDayView.swift */,
 				A4899F472B992C1F00E24D60 /* WorkoutTracker.swift */,
 				A4899F492B9ADCFE00E24D60 /* WorkoutExerciseInfo.swift */,
+				A45860AD2BD09825009862AA /* ChatView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -392,6 +398,7 @@
 				A4C3B0342B68569B00EF005B /* ContentView.swift in Sources */,
 				A4C3B06D2B6870A700EF005B /* AuthenticationManger.swift in Sources */,
 				A4C3B0322B68569B00EF005B /* CPSC491App.swift in Sources */,
+				A45860AE2BD09825009862AA /* ChatView.swift in Sources */,
 				A464E30B2B80787F00E89092 /* WorkoutView.swift in Sources */,
 				A4C3B0692B68696500EF005B /* AuthView.swift in Sources */,
 				A464E3152B89D55000E89092 /* AddFoodView.swift in Sources */,
@@ -399,6 +406,7 @@
 				A4C3B06F2B6877A000EF005B /* TopView.swift in Sources */,
 				A464E3092B80778B00E89092 /* JournalView.swift in Sources */,
 				A464E3132B89CF6300E89092 /* DataMethods.swift in Sources */,
+				A45860AC2BD0980E009862AA /* openAI.swift in Sources */,
 				A464E30D2B80789300E89092 /* RoutineView.swift in Sources */,
 				A464E3032B7AEC7400E89092 /* Utilities.swift in Sources */,
 				A4899F442B981BF100E24D60 /* FoodDayView.swift in Sources */,

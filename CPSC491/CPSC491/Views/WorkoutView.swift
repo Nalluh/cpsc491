@@ -15,7 +15,7 @@ struct WorkoutView: View {
     @State var startWorkout:Bool = false
     @State private var elapsedTime: TimeInterval = 0
     @State var userExercises: [String] = []
-    
+    // example routines
     let fullBodyExercises = [
          "Burpee",
          "Squat",
@@ -54,17 +54,19 @@ struct WorkoutView: View {
                 .modifier(TextDesign())
         }
         Spacer()
- 
+        //header
         VStack {
             Text("Example Workouts:")
                 .font(.custom("Avenir Oblique", size: 26))
-            
+            // show example routines
             HStack {
                 VStack {
+                    
                     Text("Full Body")
                         .font(.custom("Avenir Heavy", size: 22))
                     GroupBox {
                         Button(action: {
+                            // user clicked this exmaple so we assign it to use in workoutview
                             userExercises = upperBodyExercises
                             startWorkout.toggle()
                         }) {
@@ -89,6 +91,7 @@ struct WorkoutView: View {
 
                     GroupBox {
                         Button(action: {
+                            // user clicked this exmaple so we assign it to use in workoutview
                             userExercises = upperBodyExercises
                             startWorkout.toggle()
                         }) {
@@ -117,6 +120,7 @@ struct WorkoutView: View {
                     
                     GroupBox {
                         Button(action: {
+                            // user clicked this exmaple so we assign it to use in workoutview
                             userExercises = lowerBodyExercises
                             startWorkout.toggle()
                         }) {
@@ -139,6 +143,8 @@ struct WorkoutView: View {
 
                     GroupBox {
                         Button(action: {
+                            // user clicked this exmaple so we assign it to use in workoutview
+
                             userExercises = coreExercises
                             startWorkout.toggle()
                         }) {
@@ -169,9 +175,9 @@ struct WorkoutView: View {
             .frame(maxWidth: 200)
             .background(Color.blue)
             .cornerRadius(10)
-            
+            // switch view
             NavigationLink(destination: WorkoutTracker(userExercises: $userExercises),isActive: $startWorkout){
-                }
+            }.hidden()
                 
                 
             }

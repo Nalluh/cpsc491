@@ -24,25 +24,25 @@ struct RoutineView: View {
                     .modifier(TextDesign())
             }
             
-            
+            // display routines that user has created
             Spacer()
             NavigationStack{
                 VStack{
                     List
                     {
                         ForEach(uniqueRoutine(from: routine)) { routine in
-                            // add a nav link that will send to a view to allow editing of routine
-                            // also in view allow users to copy routine
-                            // and pass the routine to the workout screen
+                            // allow user to click the routine title
+                            // they will be taken to another view for modifications to the routine
                             NavigationLink(destination: EditRoutineView(routine: routine)){
                                 Text(routine.title!)
                                     .font(.custom("Avenir-Heavy", size: 20))
                             }
                         }
+                        // UI
                     }.listStyle(.plain)
                         .listRowSeparatorTint(Color.black)
                 }
-            }
+            } // UI ---- allows for user to create more routines
             .toolbar {
                 ToolbarItem(placement:.navigationBarTrailing){
                     Button{
@@ -56,6 +56,8 @@ struct RoutineView: View {
             }
         }
     
+    
+    // get a set of routines 
     func uniqueRoutine(from routine: FetchedResults<Routine>) -> [Routine] {
 
         var uniqueSet: Set<String> = []
