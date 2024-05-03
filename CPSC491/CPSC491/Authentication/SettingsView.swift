@@ -40,10 +40,12 @@ struct SettingsView: View {
     
     @StateObject private var vm = SettingsViewModel()
     @Binding var showSignInView: Bool
+    @State var goHome: Bool = false
     @State private var userUpdateCals: Bool = false
     @State private var goal  = ""
     @State private var calGoal:Int  = 0
     @FetchRequest(sortDescriptors: [SortDescriptor(\.date,order:.reverse)]) var userInfo:FetchedResults<UserInfo>
+    @Environment(\.presentationMode) var presentationMode
     @Environment(\.managedObjectContext) var managedObjectContext
 
 
@@ -51,43 +53,6 @@ struct SettingsView: View {
     var body: some View {
         
         List{
-            Button("Log out"){
-                Task{
-                    do{
-                        try vm.logOut()
-                        showSignInView = true
-                    }catch{
-                        
-                    }
-                }
-            }
-            Section(content: {
-                Button("Reset Password"){
-                    Task{
-                        do{
-                            try await vm.resetPass()
-                            print("pass reset sent")
-                            }catch{
-                            
-                        }
-                    }
-                }
-             
-                Button("Update Email"){
-              
-                    Task{
-                        do{
-                            try await vm.resetEmail()
-                            print("email reset sent")
-                        }catch{
-                            print(error)
-                        }
-                    }
-                }
-            }, header: {
-                Text("Account Options")
-                
-            })
             Section(content: {
                 Button("Update Calorie Goal"){
                     userUpdateCals.toggle()
@@ -113,9 +78,41 @@ struct SettingsView: View {
                 Text("User Options")
                 
             })
-            .navigationTitle("Settings")
-        }
+            Section(content: {
+                Button("Reset Password"){
+                    Task{
+                        do{
+                            try await vm.resetPass()
+                        }catch{
+
+                        }
+                    }
+                }
+                Button("Log out"){
+                    Task{
+                        do{
+                            try vm.logOut()
+                            self.presentationMode.wrappedValue.dismiss()
+                            showSignInView = true
+                        
+                        }catch{
+                            
+                        }
+                    }
+                }
+             
+
+            }, header: {
+                Text("Account Options")
+                
+            })
+        
+        } .navigationTitle("Settings")
+     
+            
+        
     }
+        
     private func deleteGoal() {
            for users in userInfo {
                managedObjectContext.delete(users)

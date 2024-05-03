@@ -36,16 +36,19 @@ struct WorkoutExerciseInfo: View {
     
     var body: some View {
 
-        Text("\(exerciseName)")
+        Text("\(exerciseName)") .font(.custom("AppleSDGothicNeo", size: 22))
+
        
        
                    List {
                        //display information
                        ForEach(sets.indices, id: \.self) { index in
-                           Section(header: Text("Set \(index + 1)").foregroundColor(.blue)) {
+                           Section(header: Text("Set \(index + 1)").foregroundColor(.blue)                                       .font(.custom("AppleSDGothicNeo-Bold", size: 18))
+) {
                                HStack {
                                    Text("Weight:")
                                        .foregroundColor(.primary)
+                                       .font(.custom("AppleSDGothicNeo-Bold", size: 18))
                                    TextField("", text: $sets[index].weight)
                                        .padding(.vertical, 8)
                                        .padding(.horizontal, 10)
@@ -53,6 +56,7 @@ struct WorkoutExerciseInfo: View {
                                        .cornerRadius(8)
                                    Text("Reps:")
                                        .foregroundColor(.primary)
+                                       .font(.custom("AppleSDGothicNeo-Bold", size: 18))
                                    TextField("", text: $sets[index].reps)
                                        .padding(.vertical, 8)
                                        .padding(.horizontal, 10)
@@ -151,7 +155,8 @@ struct WorkoutExerciseInfo: View {
                        }
                        .listStyle(.automatic)
                        .listRowBackground(Color.clear)
-                   } //list
+                   }.listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+            .listStyle(.plain) //list
                    
                }
         

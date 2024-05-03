@@ -24,7 +24,7 @@ struct ContentView: View {
 
     let dateFormatterContent: DateFormatter = {
         let formatter = DateFormatter()
-        formatter.dateFormat = "dd"
+        formatter.dateFormat = "d"
         return formatter
     }()
     
@@ -47,9 +47,10 @@ struct ContentView: View {
             case .home:
                 HStack {
                     Spacer()
-                    Text("      Trifecta")
-                        .modifier(TextDesign())
-                    
+                    VStack(alignment: .center){
+                        Text("       Trifecta")
+                            .modifier(TextDesign())
+                    }
                     
                     Spacer()
                     Button(action: {
@@ -61,20 +62,25 @@ struct ContentView: View {
                     
                 }
                 
-                VStack {
-                    
-                    ProgressBar(progress: $progressVal)
-                    
-                        .frame(width: 300.0, height: 300.0)
-                        .padding(80.0).onAppear(){
-                            
-                            progressVal = calsToday() / getCalGoal()
-                        }
-                    
-                    
+                VStack(alignment: .center){
+                    VStack(alignment: .center, spacing: -50){
+                        
+                        ProgressBar(progress: $progressVal)
+                        
+                            .frame(width: 300.0, height: 300.0)
+                            .padding(80.0).onAppear(){
+                                
+                                progressVal = calsToday() / getCalGoal()
+                            }
+                        
+                        Text("   \(getCalRemaining()) calories remaining")
+                            .font(.system(size: 14))
+                            .modifier(TextDesign() )
+                    }
+                    Spacer()
                     VStack(alignment: .center)
                     {
-                        
+                      
                         Text("Log Streak:  \(streakValue)    \(streakStatus)")
                             .font(.custom("Avenir-Heavy", size: 16))
                             .padding(10)
@@ -124,15 +130,37 @@ struct ContentView: View {
             }.onReceive(timer) { _ in
                 
                  streakValue = getStreak()
-                streakStatus = streakValue < 1 ? "😕" : "😁"            }
+                streakStatus = streakValue < 1 ? "😕" : "😁"
+                
+            }
 
                           
             
             NavigationLink(destination: SettingsView(showSignInView: $showSignInView), isActive: $showingSettings) {
                           
             }.hidden()
-        }
+            //.navigationBarBackButtonHidden()
+    }
     
+    
+    
+    func uniqueFood(from food: FetchedResults<FoodInfo>) -> [FoodInfo] {
+        func formattedDate(from date: Date) -> String {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "MM-dd-yyyy"
+            return formatter.string(from: date)
+        }
+        var uniqueSet: Set<String> = []
+        var uniqueFoodItems: [FoodInfo] = []
+        for item in food {
+            let formattedDate = formattedDate(from: item.date!)
+            if !uniqueSet.contains(formattedDate) {
+                uniqueSet.insert(formattedDate)
+                uniqueFoodItems.append(item)
+            }
+        }
+        return uniqueFoodItems
+    }
     
     private func calsToday() -> Float {
        var calToday : Float = 0
@@ -156,42 +184,41 @@ struct ContentView: View {
    }
     
     private func getStreak() -> Int {
-        var streak: Int = 0
-        var doesStreakExsist: Bool = false
+        var streak = 0
+        var doesStreakExist = false
 
-        // check optional 
-        if var todaysDate = Int(currentDay)
-        {
-            for food in food {
-                var recentFoodDate: String {
-                    return dateFormatterContent.string(from: food.date!)
-                }
-                
-                // check for current day entires and append to streak
-                // also check if doesstreakexsist = false because we only want to append once
-                 if recentFoodDate == String(todaysDate)  && !doesStreakExsist {
-                    streak += 1
-                     doesStreakExsist = true
+        // Sort the food set by date desc order
+        let sortedFood = uniqueFood(from: food).sorted { $0.date! > $1.date! }
 
-                }
-                // increase streak for each day logged
-                else if recentFoodDate == String(todaysDate - 1 ){
-                    
-                    streak += 1
-                    todaysDate -= 1
-                    doesStreakExsist = true
-                }
-                // return zero if no streak
-                else if !doesStreakExsist {
-                    return 0
-                }
-                    
+        
+        let today = Date()
+
+        // Iterate through the sorted food entries
+        for foodEntry in sortedFood {
+            // Check if the entry's date is yesterday or today
+            if let entryDate = foodEntry.date, Calendar.current.isDateInToday(entryDate) || Calendar.current.isDateInYesterday(entryDate) {
+                // Increment streak
+                streak += 1
+                doesStreakExist = true
+            } else {
+                // If the streak breaks, exit the loop
+                break
             }
         }
+
+        // If there was no streak found, return 0
+        if !doesStreakExist {
+            streak = 0
+        }
+
         return streak
     }
     
-
+    private func getCalRemaining() -> Int {
+        let todayCals = calsToday()
+        let totalCals = getCalGoal()
+        return  Int(totalCals - todayCals);
+    }
    
     
     
@@ -224,16 +251,18 @@ struct ProgressBar: View{
     var body: some View{
         ZStack{
             Circle()
-                .stroke(lineWidth: 20.0)
+                .stroke(lineWidth: 30.0)
                 .opacity(0.20)
                 .foregroundColor(Color.gray)
+        
+                Text("   \(calsToday()) / \(getCalGoal())")
+                    .font(.system(size: 30))
+                    .modifier(TextDesign())
+             
             
-            Text("     \(calsToday()) / \(getCalGoal())")
-                .modifier(TextDesign())
-                .font(.system(size: 10))
             Circle()
                 .trim(from: 0.0, to: CGFloat(min(self.progress,1.0)))
-                .stroke(style: StrokeStyle(lineWidth: 12.0,lineCap: .round, lineJoin: .round))
+                .stroke(style: StrokeStyle(lineWidth: 22.0,lineCap: .round, lineJoin: .round))
                 .foregroundColor(color)
                 .rotationEffect(Angle(degrees: 270))
                 // .animation(.easeInOut(duration:2.0))
@@ -262,6 +291,8 @@ struct ProgressBar: View{
        }
        return calGoal
    }
+    
+  
     
 }
 

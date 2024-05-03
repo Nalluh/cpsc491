@@ -196,13 +196,26 @@ struct JournalView: View {
                     }.listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
                         .listStyle(.plain)
                         .searchable(text: $search) {
-                            ForEach(uniqueFood(from: food)) { food in
-                                let foodDateSearchBar = dateFormatterForSearchBar.string(from:food.date!)
-                                let foodDate = dateFormatter.string(from:food.date!)
-                                NavigationLink(destination: FoodDayView(viewingDate:foodDate)){
-                                Text(foodDateSearchBar)
-                               }
-                            }
+                                ForEach(uniqueFood(from: food)) { food in
+                                    let foodDateSearchBar = dateFormatterForSearchBar.string(from:food.date!)
+                                    let foodDate = dateFormatter.string(from:food.date!)
+                                    // if search has no input show entire list on entries
+                                    if search.isEmpty
+                                    {
+                                        NavigationLink(destination: FoodDayView(viewingDate:foodDate)){
+                                        Text(foodDateSearchBar)
+                                       }
+                                    }
+                                    // else show entries corresponding to what the user has type eg. fr will return all entries with day friday
+                                    else if foodDateSearchBar.localizedCaseInsensitiveContains(search){
+                                        NavigationLink(destination: FoodDayView(viewingDate:foodDate)){
+                                            Text(foodDateSearchBar)
+                                        }
+                                        
+                                    }
+
+                                }
+                            
                     }
                         
                 
@@ -229,6 +242,7 @@ struct JournalView: View {
     
         
     
+
  // convert entities in db to a set for display
     func uniqueFood(from food: FetchedResults<FoodInfo>) -> [FoodInfo] {
         func formattedDate(from date: Date) -> String {

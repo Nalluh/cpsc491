@@ -42,6 +42,8 @@ final class AuthenticationManager{
         return authDataResultModel(user: user)
     }
     
+
+    
     func signOut() throws {
        try Auth.auth().signOut()
     }

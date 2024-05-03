@@ -9,7 +9,6 @@ import SwiftUI
 
 struct WorkoutView: View {
     
-    @StateObject private var vm = timerViewModel()
     @State var workoutTemplateNum: Int = 0
     private let  timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     @State var startWorkout:Bool = false

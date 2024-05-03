@@ -16,54 +16,53 @@ struct ChatView: View {
         }
         VStack {
             // show conversation between user and gpt
-            ScrollView {
-                VStack(alignment: .trailing, spacing: 10) {
-                    ForEach(combinedConversation) { item in
-                        HStack {
-                            if item.sender == "You"
-                            {
-                                Text(item.message)
-                                    .padding(10)
-                                    .background(item.sender == "You" ? Color.blue : Color.green)
-                                    .foregroundColor(.white)
-                                    .clipShape(RoundedRectangle(cornerRadius: 10))
-                                
-                                Spacer()
-                                
-                                Text(item.sender)
-                                    .padding(.horizontal, 20)
-                                    .padding(.vertical, 4)
-                                    .background(item.sender == "You" ? Color.blue : Color.green)
-                                    .foregroundColor(.white)
-                                    .clipShape(Capsule())
+            ScrollViewReader { view in
+                ScrollView {
+                    VStack(alignment: .trailing, spacing: 10) {
+                        ForEach(combinedConversation) { item in
+                            HStack {
+                                if item.sender == "User" {
+                                    Spacer()
+                                    
+                                    VStack(alignment: .trailing) {
+                                        Text(item.sender)
+                                            .foregroundColor(.gray)
+                                            .padding(.horizontal, 8)
+                                            .background(Capsule().foregroundColor(.white))
+                                        
+                                        Text(item.message)
+                                            .padding(10)
+                                            .foregroundColor(.white)
+                                            .background(RoundedRectangle(cornerRadius: 10).foregroundColor(.black))
+                                    }
+                                } else {
+                                    VStack(alignment: .leading) {
+                                        Text(item.sender)
+                                            .foregroundColor(.gray)
+                                            .padding(.horizontal, 8)
+                                            .background(Capsule().foregroundColor(.white))
+                                        
+                                        Text(item.message)
+                                            .padding(10)
+                                            .foregroundColor(.white)
+                                            .background(RoundedRectangle(cornerRadius: 10).foregroundColor(.black))
+                                    }
+                                    
+                                    Spacer()
+                                }
                             }
-                            else{
-                                Text(item.sender)
-                                    .padding(.horizontal, 20)
-                                    .padding(.vertical, 4)
-                                    .background(item.sender == "You" ? Color.blue : Color.green)
-                                    .foregroundColor(.white)
-                                    .clipShape(Capsule())
-                                
-                                Spacer()
-
-                                Text(item.message)
-                                    .padding(10)
-                                    .background(item.sender == "You" ? Color.blue : Color.green)
-                                    .foregroundColor(.white)
-                                    .clipShape(RoundedRectangle(cornerRadius: 10))
-                                                            
-                             
-                            }
+                            
                         }
                     }
                 }
+                .padding()
+                    
             }
-            .padding()
+            
                 Spacer()
                 //get question
                 HStack {
-                    TextField("Enter your question", text: $question)
+                    TextField("Enter a question", text: $question)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 13)
@@ -85,7 +84,7 @@ struct ChatView: View {
                                 self.response = try await OpenAI.openAIShared.sendToGPT(message: conversation)
                                 // append gpt conversation for screen
                                 gptConversation.append(response)
-                                // reset conversation and then append the previous question so that if user has question about previous query we can give context to gpt api
+                                // reset conversation and then append the previous question so that if user has concern about previous query we can give context to gpt api
                                 conversation = ""
                                 conversation += "Previous query (ignore this if it is not related to the pending question) :\(question), Pending question = "
                                 //reset text box after button pressed
@@ -103,7 +102,7 @@ struct ChatView: View {
                 }
          
             .onAppear(){
-                // trick so that chatview does not need parameters and the chat does not display empty strings 
+                // trick so that chatview does not need parameters and the chat does not display empty strings
                 userConversation.removeFirst()
                 gptConversation.removeFirst()
             }
@@ -126,12 +125,12 @@ struct ChatView: View {
             // append user messages with identifier
             for i in 0..<maxLength {
                 if i < userConversation.count {
-                    combined.append(ConversationItem(sender: "You", message: userConversation[i]))
+                    combined.append(ConversationItem(sender: "User", message: userConversation[i]))
                 }
                 // append gpt messages with identifier
 
                 if i < gptConversation.count {
-                    combined.append(ConversationItem(sender: "AI", message: gptConversation[i]))
+                    combined.append(ConversationItem(sender: "Agent", message: gptConversation[i]))
                 }
             }
         // return an array with identifiers for each message

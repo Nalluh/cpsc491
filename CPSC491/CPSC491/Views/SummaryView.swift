@@ -12,6 +12,7 @@ struct SummaryView: View {
     @State private var animateText = false
     @State private var borderHeight: CGFloat = 0
     @State var stopWatch: TimeInterval
+   
 
     var body: some View {
     
@@ -55,7 +56,10 @@ struct SummaryView: View {
                                 .padding(.trailing)
                             Text("\(timeFormatted(stopWatch))")
                                 .font(.custom("Avenir Book", size: 20))
+                   
                 } .padding(.horizontal, 10)
+             
+                    
             Spacer()
             } .padding()
             .onAppear {

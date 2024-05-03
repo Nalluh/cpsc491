@@ -90,16 +90,19 @@ struct EditRoutineView: View {
                 // we return the array backwards because the first element of the array is an empty strring
                 // reversing it puts the empty string at the end, prompting the user to add additional information
                 routineExercises.reverse()
-            }
+            } // user has already opened view so we can appened an empty string to the end to prompt user to add additional exercises 
             else{
                 routineExercises.append("")
+
             }
+           
           
             // isInitialized lets us track wether the view has been opened more than once
             // solving the problem of appending to array everytinme we open the view
             isInitialized = true
             
         }
+        
         
         .toolbar {
             // toolbar so users can copy the routine
@@ -117,7 +120,6 @@ struct EditRoutineView: View {
             // toolbar so users can start a workout based on the routine they created
             ToolbarItem(placement:.navigationBarTrailing){
                 Button{
-                    routineExercises.append("")
 
                         // remove empty entry
                         routineExercises.removeLast()

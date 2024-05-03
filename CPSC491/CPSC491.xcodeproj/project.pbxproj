@@ -24,7 +24,6 @@
 		A464E3152B89D55000E89092 /* AddFoodView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A464E3142B89D55000E89092 /* AddFoodView.swift */; };
 		A464E3172B8EC2C200E89092 /* FoodInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A464E3162B8EC2C200E89092 /* FoodInfoView.swift */; };
 		A4899F442B981BF100E24D60 /* FoodDayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4899F432B981BF100E24D60 /* FoodDayView.swift */; };
-		A4899F462B99237A00E24D60 /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4899F452B99237A00E24D60 /* Timer.swift */; };
 		A4899F482B992C1F00E24D60 /* WorkoutTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4899F472B992C1F00E24D60 /* WorkoutTracker.swift */; };
 		A4899F4A2B9ADCFE00E24D60 /* WorkoutExerciseInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4899F492B9ADCFE00E24D60 /* WorkoutExerciseInfo.swift */; };
 		A4C3B0322B68569B00EF005B /* CPSC491App.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4C3B0312B68569B00EF005B /* CPSC491App.swift */; };
@@ -79,7 +78,6 @@
 		A464E3142B89D55000E89092 /* AddFoodView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFoodView.swift; sourceTree = "<group>"; };
 		A464E3162B8EC2C200E89092 /* FoodInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodInfoView.swift; sourceTree = "<group>"; };
 		A4899F432B981BF100E24D60 /* FoodDayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodDayView.swift; sourceTree = "<group>"; };
-		A4899F452B99237A00E24D60 /* Timer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Timer.swift; sourceTree = "<group>"; };
 		A4899F472B992C1F00E24D60 /* WorkoutTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutTracker.swift; sourceTree = "<group>"; };
 		A4899F492B9ADCFE00E24D60 /* WorkoutExerciseInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutExerciseInfo.swift; sourceTree = "<group>"; };
 		A4C3B02E2B68569B00EF005B /* CPSC491.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CPSC491.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -134,7 +132,6 @@
 			isa = PBXGroup;
 			children = (
 				A464E3022B7AEC7400E89092 /* Utilities.swift */,
-				A4899F452B99237A00E24D60 /* Timer.swift */,
 				A45860AB2BD0980E009862AA /* openAI.swift */,
 			);
 			path = Util;
@@ -417,7 +414,6 @@
 				A45860592BAAAF90009862AA /* SummaryView.swift in Sources */,
 				A464E3112B89CE9700E89092 /* FoodModel.xcdatamodeld in Sources */,
 				A458605B2BB23C04009862AA /* AddRoutineView.swift in Sources */,
-				A4899F462B99237A00E24D60 /* Timer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

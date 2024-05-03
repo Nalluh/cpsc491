@@ -9,7 +9,6 @@ import GoogleSignIn
 import GoogleSignInSwift
 import FirebaseAuth
 
-
 struct googleSignInModel {
     let idToken: String
     let accessToken: String
@@ -21,11 +20,10 @@ final class AuthViewModel: ObservableObject{
     
     func signIn() async throws   {
         guard !email.isEmpty, !password.isEmpty else{
-            // add validation metrics here
-            print("No email or password found.")
             return
         }
-        
+                
+                userAuthWork = true
                 let userData = try await AuthenticationManager.shared.signInUser(email: email, password: password)
                 print (userData)
                     
@@ -49,7 +47,6 @@ final class AuthViewModel: ObservableObject{
         
         
         try await AuthenticationManager.shared.googleSignIn(tokens: tokens)
-       // let cred = GoogleAuthProvider.credential(withIDToken: idToken, accessToken: accessToken)
     }
     
 }
@@ -59,59 +56,98 @@ final class AuthViewModel: ObservableObject{
 struct AuthView: View {
     @Binding var showSignInView: Bool
     @StateObject private var vm = AuthViewModel()
+    @State private var errorMessage: String? = ""
+
     var body: some View {
         VStack{
             VStack{
-                TextField("Email:", text:$vm.email)
+                Text("Trifecta Fitness")
+                    .font(Font.custom("AppleSDGothicNeo-Bold", size: 32))
+                    .fontWeight(.bold)
+                    .shadow(color: Color.black.opacity(0.3), radius: 5, x: 0, y: 2)
+                    .foregroundColor(.black)
                     .padding()
-                    .background(Color.gray.opacity(0.4))
-                    .cornerRadius(10)
-                
-                
-                
-                SecureField("Password:", text:$vm.password)
-                    .padding()
-                    .background(Color.gray.opacity(0.4))
-                    .cornerRadius(10)
-                
-                Button {
-                    Task{
-                        do{
-                          try await  vm.signIn()
-                          showSignInView = false
-                          return
-                        }
-                        catch{
-                            print(error)
-
-                                // error handling here
+                VStack(alignment: .leading, spacing: 20) {
+                    HStack {
+                        Text("  Email:")
+                            .font(.headline)
+                            .foregroundColor(.black)
+                    }
+                    TextField("example @email.com", text: $vm.email)
+                        .padding()
+                        .background(Color.gray.opacity(0.4))
+                        .cornerRadius(10)
+                    
+                    
+                    HStack {
+                        Text("  Password:")
+                            .font(.headline)
+                            .foregroundColor(.black)
+                    }
+                    SecureField("example", text: $vm.password)
+                        .padding()
+                        .background(Color.gray.opacity(0.4))
+                        .cornerRadius(10)
+                    
+             
+                    
+                    Button {
+                        Task{
+                            do{
+                                try await  vm.signIn()
+                                if userAuthWork
+                                {
+                                    showSignInView = false
+                                    return
+                                }
+                                errorMessage = "Please fill in all Fields"
+                            }
+                            catch{
+                                errorMessage = error.localizedDescription
+                            }
+                            
                         }
                         
+                    } label: {
+                        Text("Sign in")
+                            .font(.headline)
+                            .fontWeight(.semibold)
+                            .foregroundColor(.white)
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(
+                                LinearGradient(
+                                    gradient: Gradient(colors: [Color.gray, Color.black]),
+                                    startPoint: .top,
+                                    endPoint: .bottom
+                                ))
+                            .cornerRadius(10)
                     }
-                    
-                } label: {
-                    Text("Sign in")
-                    .font(.headline)
-                    .foregroundColor(.white)
-                    .frame(height: 55)
-                    .frame(maxWidth: .infinity)
-                    .background(Color.blue)
-                    .cornerRadius(10)
                 }
-
                 
             }
             
+            HStack{
+                VStack{
+                    Divider().padding(1).background(Color.black)
+                }
+                Text("OR")
+                VStack{
+                    Divider().padding(1).background(Color.black)
+                }
+            }.padding()
+
             GoogleSignInButton(viewModel: GoogleSignInButtonViewModel(scheme: .dark, style: .wide, state: .normal)){
                 Task{
                     do{
                         try await vm.googleSignIn()
                         showSignInView = false
                     }catch{
-                        
+                        errorMessage = error.localizedDescription
+
                     }
                 }
-            }
+            }.padding()
             
             NavigationLink{
                SignInEmailView(showSignInView: $showSignInView)
@@ -121,12 +157,19 @@ struct AuthView: View {
                     .underline()
                     .foregroundColor(.blue)
             }
-            
+            if let errorMessage = errorMessage {
+                Text(errorMessage)
+                    .foregroundColor(.red)
+                    .fontWeight(.bold)
+                    .padding()
+            }
                 Spacer()
+        }.onAppear(){
+            userAuthWork = false
         }
-        
             .padding()
-            .navigationTitle("Sign In ")
+   
+           
        
     }
     
