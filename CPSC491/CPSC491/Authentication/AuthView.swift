@@ -167,6 +167,7 @@ struct AuthView: View {
         }.onAppear(){
             userAuthWork = false
         }
+      
             .padding()
    
            

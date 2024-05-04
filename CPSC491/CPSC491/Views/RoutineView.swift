@@ -37,7 +37,8 @@ struct RoutineView: View {
                                 Text(routine.title!)
                                     .font(.custom("Avenir-Heavy", size: 20))
                             }
-                        }
+                        }.onDelete(perform: deleteRoutine)
+
                         // UI
                     }.listStyle(.plain)
                         .listRowSeparatorTint(Color.black)
@@ -50,6 +51,9 @@ struct RoutineView: View {
                     } label: {
                         Label("New Routine", systemImage: "plus.circle")
                     }
+                }
+                ToolbarItem(placement: .navigationBarLeading){
+                    EditButton()
                 }
             }.sheet(isPresented: $showingAddRoutine){
                     AddRoutineView()
@@ -69,6 +73,16 @@ struct RoutineView: View {
             }
         }
         return uniqueRoutineNames
+    }
+    
+    // remove entites
+    private func deleteRoutine(offsets: IndexSet) {
+        withAnimation {
+            offsets.map { uniqueRoutine(from: routine)[$0]}.forEach(managedObjectContext.delete)
+            DataHandler().save(context: managedObjectContext)
+        }
+        
+        
     }
 
     

@@ -49,6 +49,7 @@ struct SignInEmailView: View {
     @Binding var showSignInView: Bool
     @StateObject private var vm = SignInEmailViewModel()
     @State private var errorMessage: String? = ""
+    @Environment(\.presentationMode) var presentationMode
 
 
     var body: some View {
@@ -128,6 +129,16 @@ struct SignInEmailView: View {
                     .cornerRadius(10)
             }
             .padding(.horizontal)
+            
+            
+            Button{
+                self.presentationMode.wrappedValue.dismiss()
+            }label: {
+                Text("Already have an account? ")
+                    .font(.headline)
+                    .underline()
+                    .foregroundColor(.blue)
+            }
             if let errorMessage = errorMessage {
                 Text(errorMessage)
                     .foregroundColor(.red)
