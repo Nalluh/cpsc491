@@ -72,10 +72,17 @@ struct ContentView: View {
                                 
                                 progressVal = calsToday() / getCalGoal()
                             }
-                        
-                        Text("   \(getCalRemaining()) calories remaining")
-                            .font(.system(size: 14))
-                            .modifier(TextDesign() )
+                        if getCalRemaining() >  0
+                        {
+                            Text("   \(getCalRemaining()) calories remaining")
+                                .font(.system(size: 14))
+                                .modifier(TextDesign() )
+                        }
+                        else{
+                            Text("   Limit Reached")
+                                .font(.system(size: 14))
+                                .modifier(TextDesign() )
+                        }
                     }
                     Spacer()
                     VStack(alignment: .center)
@@ -247,7 +254,6 @@ struct ProgressBar: View{
     @Environment(\.managedObjectContext) var managedObjectContext
     @FetchRequest(sortDescriptors: [SortDescriptor(\.date,order:.reverse)]) var userInfo:FetchedResults<UserInfo>
     @FetchRequest(sortDescriptors: [SortDescriptor(\.date,order:.reverse)]) var food:FetchedResults<FoodInfo>
-    var color: Color=Color.green
     var body: some View{
         ZStack{
             Circle()
@@ -263,10 +269,12 @@ struct ProgressBar: View{
             Circle()
                 .trim(from: 0.0, to: CGFloat(min(self.progress,1.0)))
                 .stroke(style: StrokeStyle(lineWidth: 22.0,lineCap: .round, lineJoin: .round))
-                .foregroundColor(color)
+                .foregroundColor(determineColor())
                 .rotationEffect(Angle(degrees: 270))
                 // .animation(.easeInOut(duration:2.0))
             
+        }.onAppear(){
+             
         }
         
     }
@@ -292,6 +300,20 @@ struct ProgressBar: View{
        return calGoal
    }
     
+    private func getCalRemaining() -> Int {
+        let todayCals = calsToday()
+        let totalCals = getCalGoal()
+        return  Int(totalCals - todayCals);
+    }
+
+    private func determineColor() -> Color{
+        if getCalRemaining() < 0{
+            return Color.red
+        }
+        else{
+            return Color.green
+        }
+    }
   
     
 }
